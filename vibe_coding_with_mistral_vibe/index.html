@@ -5,22 +5,38 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <title>EduQuest – Learn Anything, Anywhere</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    /* ==== Core Variables ==== */
     :root {
       --primary: #6a11cb;
+      --secondary: #a29bfe;
       --bg: #f0f4f8;
-      --text: #222;
+      --text: #111;
+      --glass-bg: rgba(255,255,255,0.12);
+      --glass-border: rgba(255,255,255,0.2);
+    }
+    .dark {
+      --bg: #0d0d0d;
+      --text: #e0e0e0;
+      --primary: #9d4edd;
+      --secondary: #8077ec;
+      --glass-bg: rgba(30,30,30,0.35);
+      --glass-border: rgba(255,255,255,0.1);
     }
     * { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
     body {
       font-family:'Inter', sans-serif;
       line-height:1.6;
       color:var(--text);
       background:var(--bg);
+      overflow-x:hidden;
     }
     a { color:inherit; text-decoration:none; }
     img { max-width:100%; height:auto; display:block; }
-    html { scroll-behavior:smooth; }
+    body.custom-cursor {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--primary)" stroke-width="2"><animate attributeName="stroke-opacity" values="1;0" dur="1.5s" repeatCount="indefinite"/></circle></svg>'), auto;
+    }
+    /* ==== Layout ==== */
     .navbar {
       position:fixed; top:0; left:0; width:100%; height:60px;
       background:var(--primary); color:#fff;
@@ -31,9 +47,10 @@
     .nav-links { list-style:none; display:flex; gap:1rem; }
     .nav-links a {
       color:#fff; font-weight:500; padding:0.5rem 0;
-      transition: opacity 0.2s;
+      transition:opacity .2s;
     }
     .nav-links a:hover { opacity:0.8; }
+    /* ==== Hero ==== */
     .hero {
       position:relative;
       height:100vh;
@@ -45,6 +62,16 @@
       position:absolute; top:0; left:0; width:100%; height:100%;
       object-fit:cover; opacity:0.8;
     }
+    .hero-sparkles {
+      position:absolute; inset:0;
+      pointer-events:none;
+      opacity:0.6;
+      animation:float 8s linear infinite;
+    }
+    @keyframes float {
+      0% { transform:translateY(-100vh) rotate(0deg); }
+      100% { transform:translateY(100vh) rotate(360deg); }
+    }
     .hero-content {
       position:absolute; top:50%; left:50%;
       transform:translate(-50%,-50%);
@@ -52,18 +79,17 @@
       text-shadow:0 0 15px rgba(0,0,0,0.7);
     }
     .tagline {
-      font-size:2.5rem; margin-bottom:0.5rem;
-      opacity:0; animation:fade 1s forwards;
-    }
-    .tagline.active { opacity:1; }
-    @keyframes fade {
-      0% {opacity:0;}
-      5% {opacity:1;}
-      33% {opacity:1;}
-      38% {opacity:0;}
-      100% {opacity:0;}
+      font-size:2.8rem;
+      background:linear-gradient(90deg,var(--primary),var(--secondary));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      animation:typewriter 3.5s steps(30) forwards;
     }
     .subtitle { font-size:1.2rem; opacity:0.9; margin-top:0.5rem; }
+    /* ==== Sections ==== */
+    section { opacity:0; transform:translateY(30px); transition:opacity .6s ease-out, transform .6s ease-out; }
+    section.reveal { opacity:1; transform:none; }
     .courses { padding:4rem 2rem; text-align:center; }
     .courses h2 { margin-bottom:2rem; }
     .course-grid {
@@ -74,16 +100,21 @@
       margin:auto;
     }
     .course-card {
-      background:#fff;
-      border:1px solid #e0e0e0;
-      border-radius:10px;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      border-radius:16px;
       overflow:hidden;
-      box-shadow:0 4px 12px rgba(0,0,0,0.08);
-      transition:transform 0.2s, box-shadow 0.2s;
+      backdrop-filter:blur(12px);
+      box-shadow:0 8px 32px rgba(0,0,0,0.08);
+      transform:perspective(600px) translateZ(0);
+      transition:transform .3s ease, box-shadow .3s ease;
     }
     .course-card:hover {
-      transform:translateY(-4px);
-      box-shadow:0 8px 20px rgba(0,0,0,0.12);
+      transform:rotateX(5deg) rotateY(-5deg) scale(1.04);
+      box-shadow:0 20px 40px rgba(0,0,0,0.15);
+    }
+    .course-icon {
+      width:28px; height:28px; margin:0.5rem;
     }
     .course-card img { aspect-ratio:16/9; object-fit:cover; }
     .course-card h3 { margin:0.8rem 0 0.3rem; font-size:1.1rem; }
@@ -92,11 +123,7 @@
       font-size:0.95rem;
       color:#555;
     }
-    .quiz {
-      background:var(--bg);
-      padding:3rem 2rem;
-      text-align:center;
-    }
+    .quiz { background:var(--bg); padding:3rem 2rem; text-align:center; }
     .quiz h2 { margin-bottom:1rem; }
     #quiz-form {
       display:flex; flex-direction:column; gap:0.8rem;
@@ -111,7 +138,7 @@
       border:none;
       border-radius:6px;
       cursor:pointer;
-      transition:background 0.3s;
+      transition:background .3s;
     }
     #quiz-form button:hover { background:#5a0fa8; }
     #quiz-result {
@@ -120,12 +147,9 @@
       border-radius:6px;
       font-weight:bold;
       min-width:200px;
-      transition:background 0.3s;
+      transition:background .3s;
     }
-    .testimonials {
-      padding:3rem 2rem;
-      text-align:center;
-    }
+    .testimonials { padding:3rem 2rem; text-align:center; }
     .testimonials h2 { margin-bottom:1.5rem; }
     .testimonials-slider {
       display:flex;
@@ -164,7 +188,7 @@
       cursor:pointer;
       font-weight:600;
       margin-left:1rem;
-      transition:opacity 0.2s;
+      transition:opacity .2s;
     }
     .footer .contact-btn:hover { opacity:0.8; }
     .modal {
@@ -208,25 +232,42 @@
       border:none;
       border-radius:6px;
       cursor:pointer;
-      transition:background 0.3s;
+      transition:background .3s;
     }
     #contact-form button:hover { background:#5a0fa8; }
-    @media (max-width:768px) {
-      .nav-links {
-        flex-direction:column;
-        background:var(--primary);
-        width:100%;
-        display:none;
-      }
-      .nav-links.active { display:flex; }
-      .nav-links a { padding:0.5rem; }
-      .hero-content { top:40%; }
-      .tagline { font-size:1.8rem; }
+    /* ==== Dark mode toggle & floating button ==== */
+    .dark-mode-toggle, .back-to-top {
+      position:fixed;
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      border-radius:30px;
+      padding:.5rem .8rem;
+      cursor:pointer;
+      font-size:1rem;
+      transition:background .3s;
+    }
+    .dark-mode-toggle:hover, .back-to-top:hover { background:#5a0fa8; }
+    .dark-mode-toggle {
+      bottom:1rem; right:1rem;
+      z-index:10000;
+    }
+    .back-to-top {
+      bottom:2rem; right:2rem;
+      padding:.6rem 1rem;
+      opacity:0;
+      transition:opacity .3s;
+    }
+    .back-to-top.show { opacity:1; }
+    /* ==== Easter egg animation ==== */
+    @keyframes pop {
+      0% { transform:scale(0.2); opacity:1; }
+      100% { transform:scale(1); opacity:0; }
     }
   </style>
 </head>
-<body>
-  <!-- Fixed Navigation Bar -->
+<body class='custom-cursor'>
+  <!-- ==== Navigation ==== -->
   <nav class='navbar'>
     <div class='nav-brand'>EduQuest</div>
     <ul class='nav-links'>
@@ -237,46 +278,63 @@
     </ul>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- ==== Hero ==== -->
   <section class='hero'>
+    <!-- Video background (fallback handled by JS) -->
     <video class='hero-bg' autoplay muted loop playsinline>
       <source src='assets/video/hero.mp4' type='video/mp4'>
       Your browser does not support the video tag.
     </video>
+    <!-- Sparkle overlay -->
+    <svg class='hero-sparkles' viewBox='0 0 100 100' aria-hidden='true'>
+      <circle cx='10' cy='10' r='1'><animate attributeName='r' from='1' to='3' dur='1.2s' repeatCount='indefinite'/><animate attributeName='opacity' from='0.6' to='1' dur='1.2s' repeatCount='indefinite'/></circle>
+      <circle cx='20' cy='30' r='1'><animate attributeName='r' from='1' to='3' dur='1.4s' repeatCount='indefinite'/><animate attributeName='opacity' from='0.6' to='1' dur='1.4s' repeatCount='indefinite'/></circle>
+      <circle cx='40' cy='60' r='1'><animate attributeName='r' from='1' to='3' dur='1.6s' repeatCount='indefinite'/><animate attributeName='opacity' from='0.6' to='1' dur='1.6s' repeatCount='indefinite'/></circle>
+      <circle cx='70' cy='20' r='1'><animate attributeName='r' from='1' to='3' dur='1.8s' repeatCount='indefinite'/><animate attributeName='opacity' from='0.6' to='1' dur='1.8s' repeatCount='indefinite'/></circle>
+      <circle cx='80' cy='80' r='1'><animate attributeName='r' from='1' to='3' dur='2s' repeatCount='indefinite'/><animate attributeName='opacity' from='0.6' to='1' dur='2s' repeatCount='indefinite'/></circle>
+    </svg>
     <div class='hero-content'>
-      <h1 class='tagline'>Learn. Practice. Master.</h1>
+      <h1 class='tagline'></h1>
       <p class='subtitle'>Your journey starts here.</p>
     </div>
   </section>
 
-  <!-- Featured Courses -->
+  <!-- ==== Featured Courses ==== -->
   <section id='courses' class='courses'>
     <h2>Featured Courses</h2>
     <div class='course-grid'>
+      <!-- Algebra I -->
       <article class='course-card'>
-        <img src='https://picsum.photos/seed/course1/400/300' alt='Course image'>
+        <svg class='course-icon' fill='none'><use href='#icon-algebra'></use></svg>
+        <img src='https://picsum.photos/seed/course1/400/300' alt='Algebra I'>
         <h3>Algebra I</h3>
         <p>Master algebraic concepts with interactive exercises.</p>
       </article>
+      <!-- Intro to Physics -->
       <article class='course-card'>
-        <img src='https://picsum.photos/seed/course2/400/300' alt='Course image'>
+        <svg class='course-icon' fill='none'><use href='#icon-physics'></use></svg>
+        <img src='https://picsum.photos/seed/course2/400/300' alt='Intro to Physics'>
         <h3>Intro to Physics</h3>
         <p>Explore the fundamentals of motion and energy.</p>
       </article>
+      <!-- Spanish Basics -->
       <article class='course-card'>
-        <img src='https://picsum.photos/seed/course3/400/300' alt='Course image'>
+        <svg class='course-icon' fill='none'><use href='#icon-languages'></use></svg>
+        <img src='https://picsum.photos/seed/course3/400/300' alt='Spanish Basics'>
         <h3>Spanish Basics</h3>
         <p>Learn essential phrases for everyday conversation.</p>
       </article>
+      <!-- Fundamentals of Sketching -->
       <article class='course-card'>
-        <img src='https://picsum.photos/seed/course4/400/300' alt='Course image'>
+        <svg class='course-icon' fill='none'><use href='#icon-arts'></use></svg>
+        <img src='https://picsum.photos/seed/course4/400/300' alt='Fundamentals of Sketching'>
         <h3>Fundamentals of Sketching</h3>
         <p>Develop your drawing skills with guided practice.</p>
       </article>
     </div>
   </section>
 
-  <!-- Learning Paths Quiz -->
+  <!-- ==== Learning Paths Quiz ==== -->
   <section id='quiz' class='quiz'>
     <h2>Learning Paths Quiz</h2>
     <form id='quiz-form'>
@@ -299,7 +357,7 @@
     <div id='quiz-result' class='quiz-result'></div>
   </section>
 
-  <!-- Success Stories / Testimonials -->
+  <!-- ==== Success Stories / Testimonials ==== -->
   <section id='testimonials' class='testimonials'>
     <h2>Success Stories</h2>
     <div class='testimonials-slider'>
@@ -314,7 +372,7 @@
     </div>
   </section>
 
-  <!-- Footer with Contact Modal -->
+  <!-- ==== Footer with Contact Modal ==== -->
   <footer class='footer'>
     <p>&copy; 2025 EduQuest. All rights reserved.</p>
     <button id='open-modal' class='contact-btn'>Contact Us</button>
@@ -334,22 +392,40 @@
     </div>
   </div>
 
+  <!-- Dark mode toggle & back-to-top -->
+  <button class='dark-mode-toggle'>🌓</button>
+  <button class='back-to-top'>↑</button>
+
+  <!-- ==== SVG Sprite for Icons ==== -->
+  <svg xmlns='http://www.w3.org/2000/svg' style='display:none'>
+    <symbol id='icon-algebra' viewBox='0 0 24 24'>
+      <path d='M4 12h16M4 12l4 4M4 12l4 -4' fill='none' stroke='currentColor' stroke-width='2'/>
+    </symbol>
+    <symbol id='icon-physics' viewBox='0 0 24 24'>
+      <circle cx='12' cy='12' r='9' fill='none' stroke='currentColor' stroke-width='2'/>
+      <line x1='2' y1='12' x2='22' y2='12' stroke='currentColor' stroke-width='2'/>
+    </symbol>
+    <symbol id='icon-languages' viewBox='0 0 24 24'>
+      <path d='M12 2a9 9 0 0 1 9 9v9l-6-6' fill='none' stroke='currentColor' stroke-width='2'/>
+    </symbol>
+    <symbol id='icon-arts' viewBox='0 0 24 24'>
+      <path d='M2 21h20V1C2 1 2 5 2 9v10z' fill='none' stroke='currentColor' stroke-width='2'/>
+    </symbol>
+  </svg>
+
   <script>
-    // Tagline rotation
+    /* ---------- Tagline rotation ---------- */
     const taglines = ['Learn. Practice. Master.', 'Explore. Discover. Achieve.', 'Your Future Starts Here.'];
     const taglineEl = document.querySelector('.tagline');
-    let taglineIndex = 0;
-    function rotateTagline() {
-      taglineEl.textContent = taglines[taglineIndex];
-      taglineEl.classList.remove('active');
-      void taglineEl.offsetWidth;
-      taglineEl.classList.add('active');
-      taglineIndex = (taglineIndex + 1) % taglines.length;
+    let taglineIdx = 0;
+    function rotateTagline(){
+      taglineEl.textContent = taglines[taglineIdx];
+      taglineIdx = (taglineIdx + 1) % taglines.length;
     }
-    setInterval(rotateTagline, 3000);
+    setInterval(rotateTagline, 4000);
     rotateTagline();
 
-    // Video background fallback overlay
+    /* ---------- Video fallback background ---------- */
     const hero = document.querySelector('.hero');
     if (hero) {
       const video = hero.querySelector('video');
@@ -360,50 +436,70 @@
       }
     }
 
-    // Quiz logic
+    /* ---------- Quiz logic ---------- */
     const quizForm = document.getElementById('quiz-form');
     const quizResult = document.getElementById('quiz-result');
     const answers = { q1: 'a', q2: 'c', q3: 'a', q4: 'b' };
     quizForm.addEventListener('submit', function(e){
       e.preventDefault();
-      let score = 0;
-      let total = Object.keys(answers).length;
+      let score = 0, total = Object.keys(answers).length;
       for(const [q, correct] of Object.entries(answers)){
         const selected = this.elements['q'+q].value;
-        if(selected===correct){ score++; }
+        if(selected===correct) score++;
       }
       quizResult.textContent = `You scored ${score}/${total}`;
       quizResult.style.background = score===total ? '#e0ffe0' : '#ffe0e0';
     });
 
-    // Testimonials slider
+    /* ---------- Testimonials slider (simple auto slide) ---------- */
     const slides = document.querySelectorAll('.testimonials-slider blockquote');
     let slideIndex = 0;
-    function showSlide(index){
-      slides.forEach((s,i)=> s.style.display = i===index ? 'block' : 'none');
+    function showSlide(i){
+      slides.forEach(s=> s.style.display = (s===slides[i])?'block':'none');
     }
-    function nextSlide(){
-      slideIndex = (slideIndex+1) % slides.length;
-      showSlide(slideIndex);
-    }
+    function nextSlide(){ slideIndex = (slideIndex+1)%slides.length; showSlide(slideIndex); }
     showSlide(slideIndex);
     setInterval(nextSlide,5000);
 
-    // Contact modal
-    const openModalBtn = document.getElementById('open-modal');
-    const modal = document.getElementById('contact-modal');
-    const closeBtn = modal.querySelector('.close');
-    openModalBtn.addEventListener('click',()=> modal.classList.add('open'));
-    closeBtn.addEventListener('click',()=> modal.classList.remove('open'));
-    modal.addEventListener('click', e=>{ if(e.target===modal) modal.classList.remove('open'); });
+    /* ---------- Dark mode toggle ---------- */
+    const darkToggle = document.querySelector('.dark-mode-toggle');
+    darkToggle.addEventListener('click',()=>{
+      document.documentElement.classList.toggle('dark');
+    });
 
-    // Smooth scroll for nav links
-    document.querySelectorAll('.nav-links a').forEach(link=>{
-      link.addEventListener('click', e=>{
-        e.preventDefault();
-        const target = document.querySelector(link.getAttribute('href'));
-        target.scrollIntoView({behavior:'smooth'});
+    /* ---------- Back-to-top button ---------- */
+    const backTop = document.querySelector('.back-to-top');
+    window.addEventListener('scroll',()=>{
+      backTop.classList.toggle('show', window.scrollY > 300);
+    });
+    backTop.addEventListener('click',()=>{
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    /* ---------- Scroll reveal animation ---------- */
+    const revealElems = document.querySelectorAll('section');
+    const revealObserver = new IntersectionObserver((entries,obs)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('reveal');
+          obs.unobserve(entry.target);
+        }
       });
+    },{threshold:0.15});
+    revealElems.forEach(el=> revealObserver.observe(el));
+
+    /* ---------- Easter egg (Option+E) ---------- */
+    document.addEventListener('keydown', e=>{
+      if(e.key === 'e' && (e.metaKey || e.ctrlKey)){
+        const confetti = document.createElement('div');
+        confetti.textContent = '✨';
+        confetti.style.position = 'fixed';
+        confetti.style.fontSize = '2rem';
+        confetti.style.pointerEvents = 'none';
+        confetti.style.animation = 'pop .6s forwards';
+        document.body.appendChild(confetti);
+        setTimeout(()=> confetti.remove(), 600);
+      }
     });
   </script>
 </body>

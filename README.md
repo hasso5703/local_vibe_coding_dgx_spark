@@ -111,8 +111,8 @@ screen -S glm-47
   --threads -2 --ctx-size 0 --fit on --seed 3407 --n-gpu-layers 99
 
 ```
+Max ctx window is 202752
 also look at: [GLM‑4.7‑Flash documentation](https://unsloth.ai/docs/models/glm-4.7-flash)
-
 
 #### Devstral‑Small‑2‑24B‑Instruct (UD‑Q8_K_XL) (It’s a dense model, so it will be slower than the MoE alternatives.)
 
@@ -125,9 +125,11 @@ also look at: [Devstral 2 documentation](https://unsloth.ai/docs/models/tutorial
 #### Nemotron‑3‑Nano‑30B‑A3B (UD‑Q8_K_XL)
 
 ```bash
-./bin/llama-server --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --threads -2 --ctx-size 0 --n-gpu-layers 99 --jinja --port 8080 --host 0.0.0.0
+./bin/llama-server --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --threads -8 --ctx-size 262144 --n-gpu-layers 99 --jinja --fit on --temp 0.6 --top-p 0.95 --port 8080 --host 0.0.0.0
 
 ```
+--temp 1.0 --top-p 1.0 for general instruction, --temp 0.6 --top-p 0.95 for tool calling
+Context size can be 1M : --ctx-size 1048576 or --ctx-size 0
 also look at: [Nemotron 3 documentation](https://unsloth.ai/docs/models/nemotron-3)
 
 #### GPT‑OSS‑120B (F16) (fastest under load, still fast at 100 k‑token context)

@@ -187,6 +187,13 @@ temperature = 0.7
 input_price = 0.0
 output_price = 0.0
 
+[[models]]
+name = "Nemotron-3-Nano-30B-A3B"
+provider = "llamacpp"
+temperature = 0.6
+input_price = 0.0
+output_price = 0.0
+
 ```
 
 *Note: You can follow the same pattern for other downloaded models.*
@@ -218,3 +225,48 @@ Use the following prompt (adapted from [Claude.ai Prompt Library](https://platfo
 ## 7. Multiple User
 
 *Upcoming: Support via `vLLM` will be added in a future update.*
+
+---
+
+## 8. Remote Vibe-Coding (Multi-Device Setup)
+
+You can run the `vibe` CLI on a different machine (e.g., a MacBook) while leveraging the DGX Spark's GPU power.
+
+### Prerequisites
+
+1. **Tailscale:** Ensure both the DGX Spark and your local machine are on the same Tailscale network.
+2. **Host Binding:** Ensure the `llama-server` on the DGX Spark is launched with `--host 0.0.0.0`.
+
+### Local Machine Configuration
+
+On your MacBook (or other remote machine), edit `~/.vibe/config.toml` to point to the DGX Spark's Tailscale IP:
+
+```toml
+[[providers]]
+name = "dgx-remote-llamacpp"
+api_base = "http://100.114.54.60:8080/v1" # Replace with your DGX Tailscale IP
+api_key_env_var = ""
+api_style = "openai"
+backend = "generic"
+
+[[models]]
+name = "Glm-4.7-Flash"
+provider = "dgx-remote-llamacpp"
+temperature = 0.7
+input_price = 0.0
+output_price = 0.0
+
+[[models]]
+name = "Nemotron-3-Nano-30B-A3B"
+provider = "dgx-remote-llamacpp"
+temperature = 0.6
+input_price = 0.0
+output_price = 0.0
+
+```
+
+### Usage
+
+1. Run `vibe` on your local machine.
+2. Execute `/reload` to load the new config.
+3. Select the remote model using `/model`.

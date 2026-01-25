@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduQuest - Online Learning Platform</title>
+    <style>
+        /* ============================================
+           CSS STYLES
+           ============================================ */
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            background: white;
+            color: #667eea;
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            padding: 0.3rem 0.5rem;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+
+        .search-bar button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background: #764ba2;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .dynamic-tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            min-height: 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .get-started-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .get-started-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Section Styling */
+        section {
+            padding: 5rem 10%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        /* Featured Courses Section */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+        }
+
+        .course-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .course-instructor {
+            font-size: 0.9rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .course-description {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .course-rating {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .course-duration {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .enroll-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .enroll-btn:hover {
+            background: #764ba2;
+        }
+
+        /* Learning Paths Section */
+        .learning-paths {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #e8f0fe;
+            font-weight: 500;
+        }
+
+        .quiz-result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .quiz-result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .quiz-result.best-fit {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .quiz-result.other-fit {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .start-quiz-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Success Stories Section */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .author-info h4 {
+            margin-bottom: 0.2rem;
+            color: #333;
+        }
+
+        .author-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 10% 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            opacity: 1;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .contact-info p {
+            opacity: 0.9;
+        }
+
+        .contact-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-bottom p {
+            opacity: 0.8;
+        }
+
+        /* Contact Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .contact-form {
+            margin-top: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .search-bar {
+                width: 150px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .dynamic-tagline {
+                font-size: 1.2rem;
+            }
+
+            section {
+                padding: 3rem 5%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .dynamic-tagline {
+                font-size: 1rem;
+            }
+
+            .get-started-btn {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+
+            .course-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         NAVIGATION BAR
+         ============================================ -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <span>Edu</span>Quest
+        </a>
+        <div class="menu-toggle" id="menuToggle">☰</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#math">Math</a></li>
+            <li><a href="#science">Science</a></li>
+            <li><a href="#languages">Languages</a></li>
+            <li><a href="#arts">Arts</a></li>
+        </ul>
+        <div class="search-bar">
+            <input type="text" placeholder="Search courses...">
+            <button>🔍</button>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         HERO SECTION
+         ============================================ -->
+    <section class="hero">
+        <video class="hero-video" autoplay muted loop playsinline poster="https://via.placeholder.com/1920x1080/f8f9fa/667eea?text=Students+Learning+Online">
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to EduQuest</h1>
+            <p class="dynamic-tagline" id="tagline">Learn at your own pace</p>
+            <button class="get-started-btn" onclick="scrollToCatalog()">Get Started</button>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FEATURED COURSES SECTION
+         ============================================ -->
+    <section id="courses">
+        <h2 class="section-title">Featured Courses</h2>
+        <p class="section-subtitle">Explore our most popular courses designed to help you succeed</p>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="course-image">📐</div>
+                <div class="course-content">
+                    <h3 class="course-title">Advanced Calculus</h3>
+                    <p class="course-instructor">Dr. Sarah Johnson</p>
+                    <p class="course-description">Master calculus concepts including derivatives, integrals, and applications in real-world problems.</p>
+                    <div class="course-meta">
+                        <span class="course-rating">⭐ 4.9</span>
+                        <span class="course-duration">12 weeks</span>
+                        <button class="enroll-btn" onclick="enrollCourse('Advanced Calculus')">Enroll</button>
+                    </div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="course-image">🔬</div>
+                <div class="course-content">
+                    <h3 class="course-title">Introduction to Physics</h3>
+                    <p class="course-instructor">Prof. Michael Chen</p>
+                    <p class="course-description">Discover the fundamental principles of mechanics, thermodynamics, and electricity.</p>
+                    <div class="course-meta">
+                        <span class="course-rating">⭐ 4.8</span>
+                        <span class="course-duration">10 weeks</span>
+                        <button class="enroll-btn" onclick="enrollCourse('Introduction to Physics')">Enroll</button>
+                    </div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="course-image">🌍</div>
+                <div class="course-content">
+                    <h3 class="course-title">Spanish Language Basics</h3>
+                    <p class="course-instructor">Maria Rodriguez</p>
+                    <p class="course-description">Learn essential Spanish vocabulary, grammar, and conversational skills.</p>
+                    <div class="course-meta">
+                        <span class="course-rating">⭐ 4.7</span>
+                        <span class="course-duration">8 weeks</span>
+                        <button class="enroll-btn" onclick="enrollCourse('Spanish Language Basics')">Enroll</button>
+                    </div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="course-image">🎨</div>
+                <div class="course-content">
+                    <h3 class="course-title">Digital Art Fundamentals</h3>
+                    <p class="course-instructor">Emily Williams</p>
+                    <p class="course-description">Learn digital painting techniques, color theory, and composition in modern art.</p>
+                    <div class="course-meta">
+                        <span class="course-rating">⭐ 4.9</span>
+                        <span class="course-duration">14 weeks</span>
+                        <button class="enroll-btn" onclick="enrollCourse('Digital Art Fundamentals')">Enroll</button>
+                    </div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="course-image">💻</div>
+                <div class="course-content">
+                    <h3 class="course-title">Python Programming</h3>
+                    <p class="course-instructor">David Kim</p>
+                    <p class="course-description">Master Python programming from basics to advanced concepts and real-world projects.</p>
+                    <div class="course-meta">
+                        <span class="course-rating">⭐ 4.8</span>
+                        <span class="course-duration">16 weeks</span>
+                        <button class="enroll-btn" onclick="enrollCourse('Python Programming')">Enroll</button>
+                    </div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="course-image">📚</div>
+                <div class="course-content">
+                    <h3 class="course-title">World Literature</h3>
+                    <p class="course-instructor">Prof. Elizabeth Brown</p>
+                    <p class="course-description">Explore masterpieces from around the world and develop critical reading skills.</p>
+                    <div class="course-meta">
+                        <span class="course-rating">⭐ 4.7</span>
+                        <span class="course-duration">12 weeks</span>
+                        <button class="enroll-btn" onclick="enrollCourse('World Literature')">Enroll</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         LEARNING PATHS SECTION
+         ============================================ -->
+    <section class="learning-paths">
+        <h2 class="section-title">Learning Paths</h2>
+        <p class="section-subtitle">Discover your learning style and find the perfect path for your goals</p>
+        <div class="quiz-container">
+            <p class="quiz-question" id="quizQuestion">Ready to find your ideal learning path? Answer this question to get started!</p>
+            <div class="quiz-options" id="quizOptions">
+                <div class="quiz-option" onclick="selectOption(this)">I prefer structured lessons with clear goals</div>
+                <div class="quiz-option" onclick="selectOption(this)">I learn best through hands-on projects</div>
+                <div class="quiz-option" onclick="selectOption(this)">I enjoy exploring topics independently</div>
+                <div class="quiz-option" onclick="selectOption(this)">I like collaborative learning with peers</div>
+            </div>
+            <div class="quiz-result" id="quizResult"></div>
+            <button class="start-quiz-btn" id="startQuizBtn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SUCCESS STORIES SECTION
+         ============================================ -->
+    <section id="success-stories">
+        <h2 class="section-title">Success Stories</h2>
+        <p class="section-subtitle">Hear from students who transformed their lives through EduQuest</p>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"EduQuest helped me land my dream job as a software engineer. The Python course was incredibly comprehensive, and the instructors were always available to help."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">J</div>
+                    <div class="author-info">
+                        <h4>James Mitchell</h4>
+                        <p>Software Engineer at TechCorp</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"As a working professional, I needed flexible learning options. EduQuest's self-paced courses allowed me to advance my career while balancing my job."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">S</div>
+                    <div class="author-info">
+                        <h4>Sarah Thompson</h4>
+                        <p>Data Analyst at DataDriven</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The interactive learning paths made complex topics easy to understand. I went from knowing nothing about coding to building my own applications!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">M</div>
+                    <div class="author-info">
+                        <h4>Michael Davis</h4>
+                        <p>Full Stack Developer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The personalized learning experience at EduQuest is unmatched. I discovered my passion for digital art and now I'm pursuing it as a career."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">E</div>
+                    <div class="author-info">
+                        <h4>Emily Rodriguez</h4>
+                        <p>Digital Artist & Freelancer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The community support and expert instructors made all the difference. I completed my language courses and can now confidently communicate in Spanish."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">A</div>
+                    <div class="author-info">
+                        <h4>Andrew Kim</h4>
+                        <p>Business Consultant</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"EduQuest's comprehensive science curriculum prepared me perfectly for medical school. I couldn't have asked for a better learning platform."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">L</div>
+                    <div class="author-info">
+                        <h4>Lisa Chen</h4>
+                        <p>Medical Student</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>EduQuest</h3>
+                <p>Empowering learners worldwide with accessible, high-quality education.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="#math">Math</a></li>
+                    <li><a href="#science">Science</a></li>
+                    <li><a href="#languages">Languages</a></li>
+                    <li><a href="#arts">Arts</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <div class="contact-info">
+                    <p>📧 support@eduquest.com</p>
+                    <p>📞 +1 (555) 123-4567</p>
+                    <p>📍 123 Learning Street, Education City</p>
+                    <button class="contact-btn" onclick="openContactModal()">Contact Us</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 EduQuest. All rights reserved. Made with ❤️ for learners everywhere.</p>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         CONTACT MODAL
+         ============================================ -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeContactModal()">&times;</button>
+            <h2 style="color: #667eea; margin-bottom: 1rem;">Contact Us</h2>
+            <p style="color: #666; margin-bottom: 1rem;">We'd love to hear from you! Fill out the form below and our team will get back to you within 24 hours.</p>
+            <form class="contact-form" onsubmit="submitContactForm(event)">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" required placeholder="How can we help?">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" rows="4" required placeholder="Tell us more about your inquiry..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================
+         JAVASCRIPT CODE
+         ============================================ -->
+    <script>
+        // ============================================
+        // DYNAMIC TAGLINE ROTATION
+        // ============================================
+        
+        const taglines = [
+            "Learn at your own pace",
+            "Discover new passions",
+            "Expand your horizons"
+        ];
+        
+        let currentTaglineIndex = 0;
+        const taglineElement = document.getElementById('tagline');
+        
+        function rotateTagline() {
+            // Fade out effect
+            taglineElement.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Change to next tagline
+                currentTaglineIndex = (currentTaglineIndex + 1) % taglines.length;
+                taglineElement.textContent = taglines[currentTaglineIndex];
+                
+                // Fade in effect
+                taglineElement.style.opacity = '1';
+            }, 500);
+        }
+        
+        // Initialize and start rotation
+        taglineElement.style.transition = 'opacity 0.5s ease-in-out';
+        setInterval(rotateTagline, 3000);
+        
+        // ============================================
+        // NAVIGATION AND SCROLL
+        // ============================================
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close mobile menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Smooth scroll to course catalog
+        function scrollToCatalog() {
+            document.getElementById('courses').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+        
+        // ============================================
+        // COURSE ENROLLMENT
+        // ============================================
+        
+        function enrollCourse(courseName) {
+            // Create a toast notification
+            showToast(`You've enrolled in ${courseName}! 🎉`);
+        }
+        
+        // Toast notification function
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                z-index: 3000;
+                animation: slideUp 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+        
+        // ============================================
+        // QUIZ FUNCTIONALITY
+        // ============================================
+        
+        let quizStarted = false;
+        let selectedOption = null;
+        
+        function startQuiz() {
+            quizStarted = true;
+            document.getElementById('startQuizBtn').style.display = 'none';
+            document.getElementById('quizQuestion').textContent = 'Which type of learning appeals to you most?';
+            selectedOption = null;
+            
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add new options
+            const newOptions = [
+                '<div class="quiz-option" onclick="selectOption(this)">I prefer structured lessons with clear goals</div>',
+                '<div class="quiz-option" onclick="selectOption(this)">I learn best through hands-on projects</div>',
+                '<div class="quiz-option" onclick="selectOption(this)">I enjoy exploring topics independently</div>',
+                '<div class="quiz-option" onclick="selectOption(this)">I like collaborative learning with peers</div>'
+            ];
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = newOptions.join('');
+        }
+        
+        function selectOption(element) {
+            if (!quizStarted) return;
+            
+            selectedOption = element.textContent.trim();
+            
+            // Remove selected class from all options
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Show result
+            showQuizResult();
+        }
+        
+        function showQuizResult() {
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('quizQuestion');
+            
+            resultText.textContent = 'Based on your response, here\'s your learning path suggestion!';
+            
+            let resultMessage = '';
+            let resultClass = '';
+            
+            if (selectedOption.includes('structured lessons')) {
+                resultMessage = '🎯 Your Path: Structured Learning\n\nPerfect for you! Try our Math and Science courses with clear learning objectives and structured progress.';
+                resultClass = 'best-fit';
+            } else if (selectedOption.includes('hands-on')) {
+                resultMessage = '🎯 Your Path: Project-Based Learning\n\nGreat fit! Explore our Programming and Digital Art courses where you\'ll build real projects.';
+                resultClass = 'best-fit';
+            } else if (selectedOption.includes('independently')) {
+                resultMessage = '🎯 Your Path: Self-Paced Exploration\n\nExcellent match! Discover our World Literature and Spanish courses that let you learn at your own pace.';
+                resultClass = 'best-fit';
+            } else {
+                resultMessage = '🎯 Your Path: Collaborative Learning\n\nPerfect for you! Try our group courses and community features to learn with peers.';
+                resultClass = 'best-fit';
+            }
+            
+            resultDiv.innerHTML = resultMessage.replace('\n', '<br><br>');
+            resultDiv.className = 'quiz-result show ' + resultClass;
+        }
+        
+        // ============================================
+        // CONTACT MODAL
+        // ============================================
+        
+        function openContactModal() {
+            document.getElementById('contactModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function submitContactForm(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // Show success message
+            showToast(`Thank you, ${name}! We've received your message and will contact you soon.`);
+            
+            // Reset form
+            event.target.reset();
+            
+            // Close modal
+            setTimeout(() => {
+                closeContactModal();
+            }, 1500);
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('contactModal').addEventListener('click', (event) => {
+            if (event.target === document.getElementById('contactModal')) {
+                closeContactModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeContactModal();
+            }
+        });
+        
+        // ============================================
+        // SCROLL OBSERVER FOR ANIMATIONS
+        // ============================================
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Apply animation to cards
+        document.querySelectorAll('.course-card, .testimonial-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+        
+        // ============================================
+        // SEARCH FUNCTIONALITY
+        // ============================================
+        
+        const searchInput = document.querySelector('.search-bar input');
+        const searchButton = document.querySelector('.search-bar button');
+        
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                showToast(`Searching for: ${searchTerm}...`);
+                searchInput.value = '';
+            } else {
+                showToast('Please enter a search term');
+            }
+        });
+        
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                searchButton.click();
+            }
+        });
+        
+        // ============================================
+        // NAVBAR SCROLL EFFECT
+        // ============================================
+        
+        let lastScroll = 0;
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+            } else {
+                navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>

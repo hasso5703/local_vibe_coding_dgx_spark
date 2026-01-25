@@ -100,15 +100,43 @@ screen -S glm-47
 
 ```
 
-### Launch Command:
+### Launch Commands:
+
+#### GLM‑4.7‑Flash (UD‑Q8_K_XL)
 
 ```bash
 ./bin/llama-server \
   --model ~/models/GLM-4.7-Flash/GLM-4.7-Flash-UD-Q8_K_XL.gguf \
-  --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 \
-  --threads -1 --ctx-size 0 --fit on --seed 3407
+  --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 --port 8080 --host 0.0.0.0 \
+  --threads -2 --ctx-size 0 --fit on --seed 3407 --n-gpu-layers 99
 
 ```
+also look at: [GLM‑4.7‑Flash documentation](https://unsloth.ai/docs/models/glm-4.7-flash)
+
+
+#### Devstral‑Small‑2‑24B‑Instruct (UD‑Q8_K_XL) (It’s a dense model, so it will be slower than the MoE alternatives.)
+
+```bash
+./bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf  --threads -2 --ctx-size 65536 --n-gpu-layers 99 --seed 3407 --prio 2 --temp 0.15 --jinja --port 8080 --host 0.0.0.0
+
+```
+also look at: [Devstral 2 documentation](https://unsloth.ai/docs/models/tutorials/devstral-2)
+
+#### Nemotron‑3‑Nano‑30B‑A3B (UD‑Q8_K_XL)
+
+```bash
+./bin/llama-server --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --threads -2 --ctx-size 0 --n-gpu-layers 99 --jinja --port 8080 --host 0.0.0.0
+
+```
+also look at: [Nemotron 3 documentation](https://unsloth.ai/docs/models/nemotron-3)
+
+#### GPT‑OSS‑120B (F16) (fastest under load, still fast at 100 k‑token context)
+
+```bash
+./bin/llama-server --model ~/models/gpt-oss-120b/gpt-oss-120b-F16.gguf --host 0.0.0.0 --port 8080 --n-gpu-layers 99 --ctx-size 0 --threads 8 --jinja -ub 2048 -b 2048 --chat-template-kwargs '{"reasoning_effort": "high"}' --temp 1.0 --top-p 1.0 --min-p 0.0 --top-k 0.0
+
+```
+also look at: [GPT OSS documentation](https://unsloth.ai/docs/models/gpt-oss-how-to-run-and-fine-tune#run-gpt-oss-120b)
 
 *(Exit the screen with `Ctrl+A` then `D`)*
 

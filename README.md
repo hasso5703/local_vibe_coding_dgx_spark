@@ -2,13 +2,14 @@
 
 This guide details the environment setup and execution for local inference on the NVIDIA DGX Spark, specifically optimized for "Vibe-Coding."
 
-Refer to the official NVIDIA documentation: [NVIDIA Spark Nemotron Instructions](https://build.nvidia.com/spark/nemotron/instructions)
+> **Reference:** [NVIDIA Spark Nemotron Instructions](https://build.nvidia.com/spark/nemotron/instructions)
 
 ---
 
 ## 1. Environment Verification (Single User)
 
-Check the current toolchain versions:
+### Check Toolchain Versions
+Run the following to verify current versions:
 
 ```bash
 git --version
@@ -17,15 +18,21 @@ nvcc --version
 
 ```
 
-### Example Output:
+**Example Output:**
 
-> `git version 2.43.0`
-> `cmake version 3.28.3`
-> `nvcc: NVIDIA (R) Cuda compiler driver... release 13.0, V13.0.88`
+```text
+git version 2.43.0
+cmake version 3.28.3
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:57:39_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+```
 
 ### Install or Update `uv`
 
-Manage your Python environment with [uv](https://docs.astral.sh/uv/):
+Manage your Python environment with [uv](https://docs.astral.sh/uv/).
 
 ```bash
 # Install
@@ -49,7 +56,8 @@ hf version
 
 ## 2. Building llama.cpp with CUDA Support
 
-Targeting the DGX Spark architecture (`sm_121`). See [llama.cpp build docs](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md) for further details.
+Targeting the DGX Spark architecture (`sm_121`).
+*See [llama.cpp build docs](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md) for details.*
 
 ```bash
 git clone https://github.com/ggml-org/llama.cpp
@@ -58,7 +66,7 @@ mkdir build && cd build
 
 # Configure for CUDA architectures 121
 cmake .. -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="121" -DLLAMA_CURL=OFF
-make -j 10
+make -j
 
 ```
 
@@ -68,23 +76,32 @@ make -j 10
 
 We recommend using **Unsloth GGUF quants** for the best performance.
 
-### Recommended:
+### Recommended Model
 
 ```bash
 hf download unsloth/GLM-4.7-Flash-GGUF GLM-4.7-Flash-UD-Q8_K_XL.gguf --local-dir ~/models/GLM-4.7-Flash
 
 ```
 
-### Other Available Models:
+### Other Available Models
+
+**Mistral Devstral**
 
 ```bash
-# Mistral Devstral
 hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf --local-dir ~/models/Devstral-Small-2-24B-Instruct
 
-# Nemotron-3 Nano
+```
+
+**Nemotron-3 Nano**
+
+```bash
 hf download unsloth/Nemotron-3-Nano-30B-A3B-GGUF Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --local-dir ~/models/Nemotron-3-Nano-30B-A3B
 
-# GPT OSS 120B
+```
+
+**GPT OSS 120B**
+
+```bash
 hf download unsloth/gpt-oss-120b-GGUF gpt-oss-120b-F16.gguf --local-dir ~/models/gpt-oss-120b
 
 ```
@@ -93,64 +110,78 @@ hf download unsloth/gpt-oss-120b-GGUF gpt-oss-120b-F16.gguf --local-dir ~/models
 
 ## 4. Running the Inference Server
 
-To keep the server running in the background, use `screen`:
+**Tip:** To keep the server running in the background, use `screen`.
 
 ```bash
 screen -S glm-47
 
 ```
 
-### Launch Commands:
+*(Exit the screen with `Ctrl+A` then `D`)*
 
-#### GLM‑4.7‑Flash (UD‑Q8_K_XL)
+### Launch Commands
+
+#### A. GLM‑4.7‑Flash (UD‑Q8_K_XL)
+
+*Max ctx window is 202752.*
+[Documentation](https://unsloth.ai/docs/models/glm-4.7-flash)
+
+```bash
+./bin/llama-server --model ~/models/GLM-4.7-Flash/GLM-4.7-Flash-UD-Q8_K_XL.gguf \
+  --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 --port 8080 --host 0.0.0.0 --threads -2 \ 
+  --ctx-size 0 --fit on --seed 3407 --n-gpu-layers 99
+
+```
+
+#### B. Devstral‑Small‑2‑24B‑Instruct (UD‑Q8_K_XL)
+
+*Note: This is a dense model, so it will be slower than the MoE alternatives.*
+[Documentation](https://unsloth.ai/docs/models/tutorials/devstral-2)
+
+```bash
+./bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf \
+  --threads -2 --ctx-size 65536 --n-gpu-layers 99 --seed 3407 --prio 2 --temp 0.15 \
+  --jinja --port 8080 --host 0.0.0.0
+
+```
+
+#### C. Nemotron‑3‑Nano‑30B‑A3B (UD‑Q8_K_XL)
+
+*Params: `--temp 1.0 --top-p 1.0` for general instruction, `--temp 0.6 --top-p 0.95` for tool calling.*
+*Context size can be 1M: `--ctx-size 1048576` or `--ctx-size 0`.*
+[Documentation](https://unsloth.ai/docs/models/nemotron-3)
 
 ```bash
 ./bin/llama-server \
-  --model ~/models/GLM-4.7-Flash/GLM-4.7-Flash-UD-Q8_K_XL.gguf \
-  --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 --port 8080 --host 0.0.0.0 \
-  --threads -2 --ctx-size 0 --fit on --seed 3407 --n-gpu-layers 99
+  --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf \
+  --threads -8 --ctx-size 262144 --n-gpu-layers 99 \
+  --jinja --fit on --temp 0.6 --top-p 0.95 --port 8080 --host 0.0.0.0
 
 ```
-Max ctx window is 202752
-also look at: [GLM‑4.7‑Flash documentation](https://unsloth.ai/docs/models/glm-4.7-flash)
 
-#### Devstral‑Small‑2‑24B‑Instruct (UD‑Q8_K_XL) (It’s a dense model, so it will be slower than the MoE alternatives.)
+#### D. GPT‑OSS‑120B (F16)
+
+*Fastest under load, still fast at 100k‑token context.*
+[Documentation](https://unsloth.ai/docs/models/gpt-oss-how-to-run-and-fine-tune#run-gpt-oss-120b)
 
 ```bash
-./bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf  --threads -2 --ctx-size 65536 --n-gpu-layers 99 --seed 3407 --prio 2 --temp 0.15 --jinja --port 8080 --host 0.0.0.0
+./bin/llama-server --model ~/models/gpt-oss-120b/gpt-oss-120b-F16.gguf \
+  --host 0.0.0.0 --port 8080 --n-gpu-layers 99 --ctx-size 0 --threads 8 \
+  --jinja -ub 2048 -b 2048 --chat-template-kwargs '{"reasoning_effort": "high"}' \
+  --temp 1.0 --top-p 1.0 --min-p 0.0 --top-k 0.0
 
 ```
-also look at: [Devstral 2 documentation](https://unsloth.ai/docs/models/tutorials/devstral-2)
 
-#### Nemotron‑3‑Nano‑30B‑A3B (UD‑Q8_K_XL)
+### Access & Utilities
 
-```bash
-./bin/llama-server --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --threads -8 --ctx-size 262144 --n-gpu-layers 99 --jinja --fit on --temp 0.6 --top-p 0.95 --port 8080 --host 0.0.0.0
-
-```
---temp 1.0 --top-p 1.0 for general instruction, --temp 0.6 --top-p 0.95 for tool calling
-Context size can be 1M : --ctx-size 1048576 or --ctx-size 0
-also look at: [Nemotron 3 documentation](https://unsloth.ai/docs/models/nemotron-3)
-
-#### GPT‑OSS‑120B (F16) (fastest under load, still fast at 100 k‑token context)
-
-```bash
-./bin/llama-server --model ~/models/gpt-oss-120b/gpt-oss-120b-F16.gguf --host 0.0.0.0 --port 8080 --n-gpu-layers 99 --ctx-size 0 --threads 8 --jinja -ub 2048 -b 2048 --chat-template-kwargs '{"reasoning_effort": "high"}' --temp 1.0 --top-p 1.0 --min-p 0.0 --top-k 0.0
-
-```
-also look at: [GPT OSS documentation](https://unsloth.ai/docs/models/gpt-oss-how-to-run-and-fine-tune#run-gpt-oss-120b)
-
-*(Exit the screen with `Ctrl+A` then `D`)*
-
-* **Port change:** Add `--port 30000` if needed.
-* **Remote Access:** To request the model from a different machine, install [Tailscale](https://build.nvidia.com/spark/tailscale) and add `--host 0.0.0.0` to the command.
+* **Port change:** Change the port `--port 30000` if needed.
 * **Web UI:** Test the model at `http://localhost:8080` (Benchmark: ~42 tokens/sec).
 
 ---
 
 ## 5. Vibe-Coding with Mistral Vibe
 
-### Setup Workspace
+### 1. Setup Workspace
 
 ```bash
 mkdir vibe_coding_with_mistral_vibe
@@ -158,7 +189,7 @@ cd vibe_coding_with_mistral_vibe
 
 ```
 
-### Install Mistral Vibe CLI
+### 2. Install Mistral Vibe CLI
 
 Refer to the [official release](https://mistral.ai/news/devstral-2-vibe-cli):
 
@@ -167,9 +198,10 @@ uv tool install mistral-vibe
 
 ```
 
-### Configuration
+### 3. Configuration
 
-Launch `vibe`, choose your theme, and leave the API key blank (we will handle it locally). Open `~/.vibe/config.toml` (using `code` or `nano`) and ensure the following sections exist:
+Launch `vibe`, choose your theme, and leave the API key blank (handled locally).
+Open `~/.vibe/config.toml` (using `code` or `nano`) and ensure the following sections exist:
 
 ```toml
 [[providers]]
@@ -198,7 +230,7 @@ output_price = 0.0
 
 *Note: You can follow the same pattern for other downloaded models.*
 
-### Activation
+### 4. Activation
 
 1. In the `vibe` interface, run `/reload`.
 2. Type `/model`, press Enter until `Glm-4.7-Flash` is selected, then hit `ESC`.
@@ -234,12 +266,12 @@ You can run the `vibe` CLI on a different machine (e.g., a MacBook) while levera
 
 ### Prerequisites
 
-1. **Tailscale:** Ensure both the DGX Spark and your local machine are on the same Tailscale network.
+1. **Tailscale:** Ensure both the DGX Spark and your local machine are on the same [Tailscale](https://build.nvidia.com/spark/tailscale) network.
 2. **Host Binding:** Ensure the `llama-server` on the DGX Spark is launched with `--host 0.0.0.0`.
 
 ### Local Machine Configuration
 
-On your MacBook (or other remote machine), edit `~/.vibe/config.toml` to point to the DGX Spark's Tailscale IP:
+On your remote machine (e.g., MacBook), edit `~/.vibe/config.toml` to point to the DGX Spark's Tailscale IP:
 
 ```toml
 [[providers]]
@@ -270,3 +302,5 @@ output_price = 0.0
 1. Run `vibe` on your local machine.
 2. Execute `/reload` to load the new config.
 3. Select the remote model using `/model`.
+
+```

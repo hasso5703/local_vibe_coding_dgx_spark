@@ -185,10 +185,17 @@ Refer to the [official release](https://mistral.ai/news/devstral-2-vibe-cli):
 
 ```bash
 uv tool install mistral-vibe
-
 ```
 
-### 3. Configuration
+### 3. Update Mistral Vibe CLI
+
+To keep your installation up to date with the latest features and fixes:
+
+```bash
+uv tool upgrade mistral-vibe
+```
+
+### 4. Configuration
 
 Launch `vibe`, choose your theme, and leave the API key blank (handled locally).
 Open `~/.vibe/config.toml` (using `code` or `nano`) and ensure the following sections exist:

@@ -127,9 +127,7 @@ screen -S glm-47
 [Documentation](https://unsloth.ai/docs/models/glm-4.7-flash)
 
 ```bash
-./bin/llama-server --model ~/models/GLM-4.7-Flash/GLM-4.7-Flash-UD-Q8_K_XL.gguf \
-  --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 --port 8080 --host 0.0.0.0 --threads -2 \ 
-  --ctx-size 0 --fit on --seed 3407 --n-gpu-layers 99
+./bin/llama-server --model ~/models/GLM-4.7-Flash/GLM-4.7-Flash-UD-Q8_K_XL.gguf --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 --port 8080 --host 0.0.0.0 --threads -2 --ctx-size 0 --fit on --seed 3407 --n-gpu-layers 99
 
 ```
 
@@ -139,9 +137,7 @@ screen -S glm-47
 [Documentation](https://unsloth.ai/docs/models/tutorials/devstral-2)
 
 ```bash
-./bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf \
-  --threads -2 --ctx-size 65536 --n-gpu-layers 99 --seed 3407 --prio 2 --temp 0.15 \
-  --jinja --port 8080 --host 0.0.0.0
+./bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf --threads -2 --ctx-size 65536 --n-gpu-layers 99 --seed 3407 --prio 2 --temp 0.15 --jinja --port 8080 --host 0.0.0.0
 
 ```
 
@@ -152,10 +148,7 @@ screen -S glm-47
 [Documentation](https://unsloth.ai/docs/models/nemotron-3)
 
 ```bash
-./bin/llama-server \
-  --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf \
-  --threads -8 --ctx-size 262144 --n-gpu-layers 99 \
-  --jinja --fit on --temp 0.6 --top-p 0.95 --port 8080 --host 0.0.0.0
+./bin/llama-server --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --threads -8 --ctx-size 262144 --n-gpu-layers 99 --jinja --fit on --temp 0.6 --top-p 0.95 --port 8080 --host 0.0.0.0
 
 ```
 
@@ -165,10 +158,7 @@ screen -S glm-47
 [Documentation](https://unsloth.ai/docs/models/gpt-oss-how-to-run-and-fine-tune#run-gpt-oss-120b)
 
 ```bash
-./bin/llama-server --model ~/models/gpt-oss-120b/gpt-oss-120b-F16.gguf \
-  --host 0.0.0.0 --port 8080 --n-gpu-layers 99 --ctx-size 0 --threads 8 \
-  --jinja -ub 2048 -b 2048 --chat-template-kwargs '{"reasoning_effort": "high"}' \
-  --temp 1.0 --top-p 1.0 --min-p 0.0 --top-k 0.0
+./bin/llama-server --model ~/models/gpt-oss-120b/gpt-oss-120b-F16.gguf --host 0.0.0.0 --port 8080 --n-gpu-layers 99 --ctx-size 0 --threads 8 --jinja -ub 2048 -b 2048 --chat-template-kwargs '{"reasoning_effort": "high"}' --temp 1.0 --top-p 1.0 --min-p 0.0 --top-k 0.0
 
 ```
 

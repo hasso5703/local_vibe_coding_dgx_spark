@@ -69,7 +69,7 @@ cmake --build build -j --config Release
 ## Starting the Server
 
 **Tip:** You can also use the provided launcher script:
-Note: Make sure the script is executable first: `chmod +x start_whisper_server.sh`
+**Note:** Make sure the script is executable first: `chmod +x start_whisper_server.sh`
 ```bash
 ./start_whisper_server.sh
 ```
@@ -83,7 +83,7 @@ whisper.cpp/build/bin/whisper-server -m whisper.cpp/models/ggml-large-v3.bin --h
 
 ```bash
 uv sync
-uv run python web_client_transcribe.py
+uv run python whisper_app.py
 ```
 
 ## Troubleshooting

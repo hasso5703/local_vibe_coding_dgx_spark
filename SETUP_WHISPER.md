@@ -86,6 +86,13 @@ uv sync
 uv run python whisper_app.py
 ```
 
+### Features
+
+- Microphone recording
+- File upload
+- Multiple language support (auto, fr, en, de, es, it, tr)
+- Translation to English
+
 ## Troubleshooting
 
 If you encounter issues, try installing these dependencies **only if needed**:

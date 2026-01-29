@@ -9,7 +9,7 @@ This guide details the environment setup and execution for local inference on th
 ## 1. Environment Verification (Single User)
 
 ### Check Toolchain Versions
-Run the following to verify current versions:
+Verify installed versions:
 
 ```bash
 git --version
@@ -18,21 +18,8 @@ nvcc --version
 
 ```
 
-**Example Output:**
-
-```text
-git version 2.43.0
-cmake version 3.28.3
-nvcc: NVIDIA (R) Cuda compiler driver
-Copyright (c) 2005-2025 NVIDIA Corporation
-Built on Wed_Aug_20_01:57:39_PM_PDT_2025
-Cuda compilation tools, release 13.0, V13.0.88
-Build cuda_13.0.r13.0/compiler.36424714_0
-```
-
 ### Install or Update `uv`
-
-Manage your Python environment with [uv](https://docs.astral.sh/uv/).
+Manage Python environments with [uv](https://docs.astral.sh/uv/):
 
 ```bash
 # Install
@@ -40,23 +27,20 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Update
 uv self update
-
 ```
 
 ### Sync and Verify Environment
-
 ```bash
 uv sync
 source .venv/bin/activate
 hf version
-
 ```
 
 ---
 
 ## 2. Building llama.cpp with CUDA Support
 
-Targeting the DGX Spark architecture (`sm_121`).
+Targeting DGX Spark architecture (`sm_121`).
 *See [llama.cpp build docs](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md) for details.*
 
 ```bash
@@ -74,126 +58,181 @@ make -j
 
 ## 3. Model Downloads
 
-We recommend using **Unsloth GGUF quants** for the best performance.
+We recommend **Unsloth GGUF quants** for best performance.
 
-### Recommended Model
-
-```bash
-hf download unsloth/GLM-4.7-Flash-GGUF GLM-4.7-Flash-UD-Q8_K_XL.gguf --local-dir ~/models/GLM-4.7-Flash
-
-```
-*or for BF16 :*
+### Recommended: GLM-4.7-Flash (UD-Q8_K_XL)
 
 ```bash
-hf download unsloth/GLM-4.7-Flash-GGUF --include "BF16/GLM-4.7-Flash-BF16-*.gguf" --local-dir ~/models/GLM-4.7-Flash-BF16
-
-```
-hf download unsloth/Devstral-2-123B-Instruct-2512-GGUF --include "UD-Q4_K_XL/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL-*.gguf" --local-dir ~/models/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL
-
-hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF Devstral-Small-2-24B-Instruct-2512-BF16.gguf --local-dir ~/models/Devstral-Small-2-24B-Instruct-2512-BF16
-
-### Other Available Models
-
-**Mistral Devstral**
-
-```bash
-hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf --local-dir ~/models/Devstral-Small-2-24B-Instruct
-
+hf download unsloth/GLM-4.7-Flash-GGUF \
+    GLM-4.7-Flash-UD-Q8_K_XL.gguf \
+    --local-dir ~/models/GLM-4.7-Flash-UD-Q8_K_XL
 ```
 
-**Nemotron-3 Nano**
-
+*Or BF16 version:* 
 ```bash
-hf download unsloth/Nemotron-3-Nano-30B-A3B-GGUF Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --local-dir ~/models/Nemotron-3-Nano-30B-A3B
-
+hf download unsloth/GLM-4.7-Flash-GGUF \
+    --include "BF16/GLM-4.7-Flash-BF16-*.gguf" \
+    --local-dir ~/models/GLM-4.7-Flash-BF16
 ```
 
-**GPT OSS 120B**
+### Other Models
 
+**Devstral-2-123B-Instruct (UD-Q4_K_XL):**
 ```bash
-hf download unsloth/gpt-oss-120b-GGUF gpt-oss-120b-F16.gguf --local-dir ~/models/gpt-oss-120b
+hf download unsloth/Devstral-2-123B-Instruct-2512-GGUF \
+    --include "UD-Q4_K_XL/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL-*.gguf" \
+    --local-dir ~/models/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL
+```
 
+**Devstral-Small-2-24B-Instruct (UD-Q8_K_XL / BF16):**
+```bash
+hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF \
+    Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf \
+    --local-dir ~/models/Devstral-Small-2-24B-Instruct-UD-Q8_K_XL
+
+hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF \
+    Devstral-Small-2-24B-Instruct-2512-BF16.gguf \
+    --local-dir ~/models/Devstral-Small-2-24B-Instruct-2512-BF16
+```
+
+**Nemotron-3-Nano-30B-A3B (UD-Q8_K_XL):**
+```bash
+hf download unsloth/Nemotron-3-Nano-30B-A3B-GGUF \
+    Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf \
+    --local-dir ~/models/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL
+```
+
+**GPT-OSS-120B (F16):**
+```bash
+hf download unsloth/gpt-oss-120b-GGUF \
+    gpt-oss-120b-F16.gguf \
+    --local-dir ~/models/gpt-oss-120b-F16
 ```
 
 ---
 
-## 4. Running the Inference Server
+## 4. Running GLM Inference Server
 
-**Tip:** To keep the server running in the background, use `screen`.
+### Launch GLM-4.7-Flash (UD-Q8_K_XL) from root dir
 
 ```bash
-screen -S glm-47
-
+screen -dmS glm-47 ./llama.cpp/build/bin/llama-server \
+    --model ~/models/GLM-4.7-Flash/GLM-4.7-Flash-UD-Q8_K_XL.gguf \
+    --alias "GLM-4.7-Flash-Q8_K_XL" \
+    --fit on \
+    --temp 1.0 \
+    --top-p 0.95 \
+    --min-p 0.01 \
+    --port 8080 \
+    --host 0.0.0.0 \
+    --threads -8 \
+    --jinja \
+    --kv-unified \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --flash-attn on \
+    --batch-size 4096 --ubatch-size 1024 \
+    --ctx-size 0
 ```
 
-*(Exit the screen with `Ctrl+A` then `D`)*
-
-### Launch Commands
-
-#### A. GLM‑4.7‑Flash (UD‑Q8_K_XL)
-
-*Max ctx window is 202752.*
+*Max context window: 202752*
 [Documentation](https://unsloth.ai/docs/models/glm-4.7-flash)
+[Documentation 2](https://unsloth.ai/docs/basics/claude-codex#start-the-llama-server)
+
+### Launch Devstral-Small-2-24B-Instruct
 
 ```bash
-./bin/llama-server --model ~/models/GLM-4.7-Flash/GLM-4.7-Flash-UD-Q8_K_XL.gguf --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 --port 8080 --host 0.0.0.0 --threads -2 --ctx-size 0 --fit on --seed 3407 --n-gpu-layers 99
-
+screen -dmS devstral ./llama.cpp/build/bin/llama-server \
+    --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf \
+    --threads -2 \
+    --ctx-size 65536 \
+    --n-gpu-layers 99 \
+    --seed 3407 \
+    --prio 2 \
+    --temp 0.15 \
+    --jinja \
+    --port 8080 \
+    --host 0.0.0.0
 ```
 
-llama.cpp/build/bin/llama-server --model ~/models/GLM-4.7-Flash-BF16/BF16/GLM-4.7-Flash-BF16-00001-of-00002.gguf --jinja --min-p 0.01 --temp 1.0 --top-p 0.95 --port 8080 --host 0.0.0.0 --threads -8 --ctx-size 0 --fit on --kv-unified --flash-attn on --batch-size 4096 --ubatch-size 1024
-
-#### B. Devstral‑Small‑2‑24B‑Instruct (UD‑Q8_K_XL)
-
-*Note: This is a dense model, so it will be slower than the MoE alternatives.*
+*Note: Dense model, slower than MoE alternatives.*
 [Documentation](https://unsloth.ai/docs/models/tutorials/devstral-2)
 
-```bash
-./bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf --threads -2 --ctx-size 65536 --n-gpu-layers 99 --seed 3407 --prio 2 --temp 0.15 --jinja --port 8080 --host 0.0.0.0
+### Launch Nemotron-3-Nano-30B-A3B
 
+```bash
+screen -dmS nemotron ./llama.cpp/build/bin/llama-server \
+    --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf \
+    --threads -8 \
+    --ctx-size 262144 \
+    --n-gpu-layers 99 \
+    --jinja \
+    --fit on \
+    --temp 0.6 \
+    --top-p 0.95 \
+    --port 8080 \
+    --host 0.0.0.0
 ```
 
-llama.cpp/build/bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct-2512-BF16/Devstral-Small-2-24B-Instruct-2512-BF16.gguf --threads -2 --ctx-size 0 --n-gpu-layers 99 --prio 2 --temp 0.15 --jinja --port 8080 -
--host 0.0.0.0
-
-llama.cpp/build/bin/llama-server --model ~/models/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL/UD-Q4_K_XL/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL-00001-of-00002.gguf --threads -8 --ctx-size 0 --n-gpu-layers 9
-9 --prio 2 --temp 0.15 --jinja --port 8080 --host 0.0.0.0
-
-#### C. Nemotron‑3‑Nano‑30B‑A3B (UD‑Q8_K_XL)
-
-*Params: `--temp 1.0 --top-p 1.0` for general instruction, `--temp 0.6 --top-p 0.95` for tool calling.*
-*Context size can be 1M: `--ctx-size 1048576` or `--ctx-size 0`.*
+*Tool calling: `--temp 0.6 --top-p 0.95`, Context: 262144 or 1M*
 [Documentation](https://unsloth.ai/docs/models/nemotron-3)
 
-```bash
-./bin/llama-server --model ~/models/Nemotron-3-Nano-30B-A3B/Nemotron-3-Nano-30B-A3B-UD-Q8_K_XL.gguf --threads -8 --ctx-size 262144 --n-gpu-layers 99 --jinja --fit on --temp 0.6 --top-p 0.95 --port 8080 --host 0.0.0.0
+### Launch GPT-OSS-120B (F16)
 
+```bash
+screen -dmS gptoss ./llama.cpp/build/bin/llama-server \
+    --model ~/models/gpt-oss-120b/gpt-oss-120b-F16.gguf \
+    --host 0.0.0.0 \
+    --port 8080 \
+    --n-gpu-layers 99 \
+    --ctx-size 0 \
+    --threads 8 \
+    --jinja \
+    -ub 2048 \
+    -b 2048 \
+    --chat-template-kwargs '{"reasoning_effort": "high"}' \
+    --temp 1.0 \
+    --top-p 1.0 \
+    --min-p 0.0 \
+    --top-k 0.0
 ```
 
-#### D. GPT‑OSS‑120B (F16)
-
-*Fastest under load, still fast at 100k‑token context.*
 [Documentation](https://unsloth.ai/docs/models/gpt-oss-how-to-run-and-fine-tune#run-gpt-oss-120b)
 
-```bash
-./bin/llama-server --model ~/models/gpt-oss-120b/gpt-oss-120b-F16.gguf --host 0.0.0.0 --port 8080 --n-gpu-layers 99 --ctx-size 0 --threads 8 --jinja -ub 2048 -b 2048 --chat-template-kwargs '{"reasoning_effort": "high"}' --temp 1.0 --top-p 1.0 --min-p 0.0 --top-k 0.0
+### Screen Commands
 
+**Attach to screen:**
+```bash
+screen -r glm-47      # GLM-4.7-Flash
+screen -r devstral    # Devstral-Small-2-24B
+screen -r nemotron    # Nemotron-3-Nano-30B
+screen -r gptoss      # GPT-OSS-120B
 ```
+
+**Detach from screen:** `Ctrl+A` then `D`
+
+**List all screens:** `screen -ls`
 
 ### Access & Utilities
 
-* **Port change:** Change the port `--port 30000` if needed.
-* **Web UI:** Test the model at `http://localhost:8080` (Benchmark: ~42 tokens/sec).
+- **Port change:** Update `--port` (default: 8080)
+- **Web UI:** `http://localhost:8080`
+- **Benchmark:** ~42 tokens/sec (GLM-4.7-Flash Q8)
 
 ---
 
-## 5. Vibe-Coding with Mistral Vibe
+## 5. Running Whisper Server & Transcription
+
+See [SETUP_WHISPER.md](SETUP_WHISPER.md) for detailed instructions.
+
+---
+
+## 7. Vibe-Coding with Mistral Vibe
 
 ### 1. Setup Workspace
 
 ```bash
 mkdir vibe_coding_with_mistral_vibe
 cd vibe_coding_with_mistral_vibe
-
 ```
 
 ### 2. Install Mistral Vibe CLI
@@ -206,16 +245,15 @@ uv tool install mistral-vibe
 
 ### 3. Update Mistral Vibe CLI
 
-To keep your installation up to date with the latest features and fixes:
-
 ```bash
 uv tool upgrade mistral-vibe
 ```
 
 ### 4. Configuration
 
-Launch `vibe`, choose your theme, and leave the API key blank (handled locally).
-Open `~/.vibe/config.toml` (using `code` or `nano`) and ensure the following sections exist:
+Launch `vibe`, choose your theme, leave API key blank or whitespace (handled locally).
+
+Edit `~/.vibe/config.toml` and add:
 
 ```toml
 [[providers]]
@@ -227,9 +265,9 @@ backend = "generic"
 reasoning_field_name = "reasoning_content"
 
 [[models]]
-name = "Glm-4.7-Flash"
+name = "GLM-4.7-Flash-Q8_K_XL"
 provider = "llamacpp"
-temperature = 0.7
+temperature = 1.0
 input_price = 0.0
 output_price = 0.0
 
@@ -242,55 +280,31 @@ output_price = 0.0
 
 ```
 
-*Note: You can follow the same pattern for other downloaded models.*
+### 5. Activation
 
-### 4. Activation
-
-1. In the `vibe` interface, run `/reload`.
-2. Type `/model`, press Enter until `Glm-4.7-Flash` is selected, then hit `ESC`.
-
----
-
-## 6. Vibe-Coding Prompt Example
-
-Use the following prompt (adapted from [Claude.ai Prompt Library](https://platform.claude.com/docs/en/resources/prompt-library/website-wizard)) to test the setup:
-
-> Your task is to create a one-page website based on the given specifications, delivered as an HTML file with embedded JavaScript and CSS. The website should incorporate a variety of engaging and interactive design features...
-> Create a one-page website for an online learning platform called "EduQuest" with:
-> 1. Fixed navigation bar (Math, Science, Languages, Arts).
-> 2. Hero section with video background and rotating tagline (every 3s).
-> 3. Featured courses section.
-> 4. Interactive "Learning Paths" quiz.
-> 5. Success Stories/Testimonials.
-> 6. Footer with contact modal.
-> 
-> 
-
----
-
-## 7. Multiple User
-
-*Upcoming: Support via `vLLM` will be added in a future update.*
+1. Run `/reload` in the `vibe` interface
+2. Type `/model`, select your model with Enter
+3. Hit ESC when finished
 
 ---
 
 ## 8. Remote Vibe-Coding (Multi-Device Setup)
 
-You can run the `vibe` CLI on a different machine (e.g., a MacBook) while leveraging the DGX Spark's GPU power.
+Run `vibe` CLI on different machines using DGX Spark's GPU.
 
 ### Prerequisites
 
-1. **Tailscale:** Ensure both the DGX Spark and your local machine are on the same [Tailscale](https://build.nvidia.com/spark/tailscale) network.
-2. **Host Binding:** Ensure the `llama-server` on the DGX Spark is launched with `--host 0.0.0.0`.
+1. **Tailscale:** Both DGX Spark and local machine on same [Tailscale](https://build.nvidia.com/spark/tailscale) network
+2. **Host Binding:** Ensure `llama-server` uses `--host 0.0.0.0`
 
 ### Local Machine Configuration
 
-On your remote machine (e.g., MacBook), edit `~/.vibe/config.toml` to point to the DGX Spark's Tailscale IP:
+Edit `~/.vibe/config.toml` on remote machine:
 
 ```toml
 [[providers]]
 name = "dgx-remote-llamacpp"
-api_base = "http://100.114.54.60:8080/v1" # Replace with your DGX Tailscale IP
+api_base = "http://100.114.54.60:8080/v1"  # Replace with DGX Tailscale IP
 api_key_env_var = ""
 api_style = "openai"
 backend = "generic"
@@ -298,7 +312,7 @@ backend = "generic"
 [[models]]
 name = "Glm-4.7-Flash"
 provider = "dgx-remote-llamacpp"
-temperature = 0.7
+temperature = 1.0
 input_price = 0.0
 output_price = 0.0
 
@@ -311,13 +325,46 @@ output_price = 0.0
 
 ```
 
-### Usage
+### Usage on Remote Machine
 
-1. Run `vibe` on your local machine.
-2. Execute `/reload` to load the new config.
-3. Select the remote model using `/model`.
+1. Run `vibe` locally
+2. Execute `/reload`
+3. Select remote model with `/model`
 
+---
+
+## 9. Quick Start Commands
+
+### Start Everything in Background
+
+```bash
+# GLM-4.7-Flash server
+screen -dmS glm47
+./launch_glm4.7_flash.sh
+
+# Whisper server
+screen -dmS whisper-server
+./start_whisper_server.sh
+
+# Gradio app (new terminal)
+uv run python whisper_app.py
 ```
 
-screen -dmS "glm47" bash launch_glm4.7_flash.sh
-screen -dmS "whisper-server" whisper.cpp/build/bin/whisper-server -m whisper.cpp/models/ggml-large-v3.bin --host 0.0.0.0 --port 8025
+### Stop Everything
+
+Find screen names:
+```bash
+screen -ls
+```
+
+Kill specific screen:
+```bash
+screen -S glm47 -X quit
+screen -S whisper-server -X quit
+```
+
+---
+
+## 10. Multiple User Support
+
+*Upcoming: Support via `vLLM` will be added in a future update.*

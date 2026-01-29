@@ -24,6 +24,17 @@ fi
 echo "🚀 Lancement de GLM-4.7 Flash..."
 ./llama.cpp/build/bin/llama-server \
     --model "$MODEL_PATH" \
-    --jinja --min-p 0.01 --temp 0.7 --top-p 1.0 \
-    --port 8080 --host 0.0.0.0 \
-    --threads -8 --ctx-size 0 --fit on
+    --alias "GLM-4.7-Flash-Q8_K_XL" \
+    --fit on \
+    --temp 1.0 \
+    --top-p 0.95 \
+    --min-p 0.01 \
+    --port 8000 \
+    --host 0.0.0.0 \
+    --threads -8 \
+    --jinja \
+    --kv-unified \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --flash-attn on \
+    --batch-size 4096 --ubatch-size 1024 \
+    --ctx-size 0

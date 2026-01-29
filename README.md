@@ -82,6 +82,15 @@ We recommend using **Unsloth GGUF quants** for the best performance.
 hf download unsloth/GLM-4.7-Flash-GGUF GLM-4.7-Flash-UD-Q8_K_XL.gguf --local-dir ~/models/GLM-4.7-Flash
 
 ```
+*or for BF16 :*
+
+```bash
+hf download unsloth/GLM-4.7-Flash-GGUF --include "BF16/GLM-4.7-Flash-BF16-*.gguf" --local-dir ~/models/GLM-4.7-Flash-BF16
+
+```
+hf download unsloth/Devstral-2-123B-Instruct-2512-GGUF --include "UD-Q4_K_XL/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL-*.gguf" --local-dir ~/models/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL
+
+hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF Devstral-Small-2-24B-Instruct-2512-BF16.gguf --local-dir ~/models/Devstral-Small-2-24B-Instruct-2512-BF16
 
 ### Other Available Models
 
@@ -131,6 +140,8 @@ screen -S glm-47
 
 ```
 
+llama.cpp/build/bin/llama-server --model ~/models/GLM-4.7-Flash-BF16/BF16/GLM-4.7-Flash-BF16-00001-of-00002.gguf --jinja --min-p 0.01 --temp 1.0 --top-p 0.95 --port 8080 --host 0.0.0.0 --threads -8 --ctx-size 0 --fit on --kv-unified --flash-attn on --batch-size 4096 --ubatch-size 1024
+
 #### B. Devstral‑Small‑2‑24B‑Instruct (UD‑Q8_K_XL)
 
 *Note: This is a dense model, so it will be slower than the MoE alternatives.*
@@ -140,6 +151,12 @@ screen -S glm-47
 ./bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct/Devstral-Small-2-24B-Instruct-2512-UD-Q8_K_XL.gguf --threads -2 --ctx-size 65536 --n-gpu-layers 99 --seed 3407 --prio 2 --temp 0.15 --jinja --port 8080 --host 0.0.0.0
 
 ```
+
+llama.cpp/build/bin/llama-server --model ~/models/Devstral-Small-2-24B-Instruct-2512-BF16/Devstral-Small-2-24B-Instruct-2512-BF16.gguf --threads -2 --ctx-size 0 --n-gpu-layers 99 --prio 2 --temp 0.15 --jinja --port 8080 -
+-host 0.0.0.0
+
+llama.cpp/build/bin/llama-server --model ~/models/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL/UD-Q4_K_XL/Devstral-2-123B-Instruct-2512-UD-Q4_K_XL-00001-of-00002.gguf --threads -8 --ctx-size 0 --n-gpu-layers 9
+9 --prio 2 --temp 0.15 --jinja --port 8080 --host 0.0.0.0
 
 #### C. Nemotron‑3‑Nano‑30B‑A3B (UD‑Q8_K_XL)
 
@@ -301,3 +318,6 @@ output_price = 0.0
 3. Select the remote model using `/model`.
 
 ```
+
+screen -dmS "glm47" bash launch_glm4.7_flash.sh
+screen -dmS "whisper-server" whisper.cpp/build/bin/whisper-server -m whisper.cpp/models/ggml-large-v3.bin --host 0.0.0.0 --port 8025

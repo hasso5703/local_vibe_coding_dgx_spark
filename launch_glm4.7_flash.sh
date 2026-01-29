@@ -29,7 +29,7 @@ echo "🚀 Lancement de GLM-4.7 Flash..."
     --temp 1.0 \
     --top-p 0.95 \
     --min-p 0.01 \
-    --port 8000 \
+    --port 8080 \
     --host 0.0.0.0 \
     --threads -8 \
     --jinja \

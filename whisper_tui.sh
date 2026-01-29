@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # ==========================================
-# CONFIGURATION & CONSTANTES
+# CONFIGURATION & CONSTANTS
 # ==========================================
 REMOTE_IP="100.114.54.60"
 PORT="8025"
 API_URL="http://$REMOTE_IP:$PORT/inference"
 TEMP_FILE="/tmp/whisper_session.wav"
 
-# Options Gradio-like
+# Gradio-like Options
 LANGS=("fr" "en" "de" "es" "it" "tr" "auto")
 CUR_LANG_IDX=0 
 DO_TRANSLATE=0 
 
-# Couleurs & Tput
+# Colors & Tput
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
@@ -22,27 +22,27 @@ CYAN=$(tput setaf 6)
 BOLD=$(tput bold)
 NC=$(tput sgr0)
 
-# État
+# State
 RECORDING_PID=0
 IS_RECORDING=0
 
 # ==========================================
-# GESTION SYSTÈME
+# SYSTEM MANAGEMENT
 # ==========================================
 cleanup() {
     tput cnorm
     [[ -f "$TEMP_FILE" ]] && rm -f "$TEMP_FILE"
     if [[ $RECORDING_PID -ne 0 ]]; then kill -9 $RECORDING_PID 2>/dev/null; fi
     tput cup $(tput lines) 0
-    echo -e "${BLUE}>>> Arrêt S2T.${NC}"
+    echo -e "${BLUE}>>> Stopping S2T.${NC}"
     exit 0
 }
 trap cleanup EXIT INT TERM
 
 check_dependencies() {
-    # On vérifie aussi grep et uname qui sont essentiels
+    # Check grep and uname as well since they are essential
     for dep in ffmpeg jq curl grep uname; do
-        command -v "$dep" &> /dev/null || { echo "${RED}Erreur critique : Dépendance '$dep' manquante.${NC}"; exit 1; }
+        command -v "$dep" &> /dev/null || { echo "${RED}Critical Error: Missing dependency '$dep'.${NC}"; exit 1; }
     done
 }
 
@@ -52,19 +52,19 @@ configure_env() {
         Darwin)
             # macOS
             DRIVER="avfoundation"
-            # Index 0 est souvent le micro par défaut, mais ":0" suffit souvent pour "default"
+            # Index 0 is often the default mic, but ":0" is often enough for "default"
             INPUT=":0" 
             CLIP_CMD="pbcopy"
             CHECK_CMD="ffmpeg -f avfoundation -list_devices true -i '' 2>&1 | grep 'Audio'"
             ;;
         Linux)
-            # Linux : Tentative PulseAudio sinon ALSA
+            # Linux: Attempt PulseAudio else ALSA
             if pactl list sources &>/dev/null; then
                 DRIVER="pulse"
                 INPUT="default"
             else
                 DRIVER="alsa"
-                INPUT="sysdefault:CARD=0" # Fallback ALSA générique
+                INPUT="sysdefault:CARD=0" # Generic ALSA fallback
             fi
             
             if command -v xclip &> /dev/null; then CLIP_CMD="xclip -sel clip"; else CLIP_CMD="wl-copy"; fi
@@ -73,43 +73,43 @@ configure_env() {
         MINGW*|MSYS*|CYGWIN*)
             # Windows (via Git Bash)
             DRIVER="dshow"
-            # Sur Windows, il faut souvent trouver le nom exact, mais "audio=Microphone..." est complexe.
-            # On utilise une astuce : dshow permet parfois l'index audio=0 si config via liste.
-            # Pour simplifier ici on garde une approche générique qui nécessite souvent le nom exact.
-            # Solution robuste : scanner les devices (non implémenté pour simplicité absolue, on tente default)
+            # On Windows, exact name is often needed, but "audio=Microphone..." is complex.
+            # Using a trick: dshow sometimes allows index audio=0 if config via list.
+            # To simplify here we keep a generic approach that often requires the exact name.
+            # Robust solution: scan devices (not implemented for absolute simplicity, attempting default)
             INPUT="audio=Microphone" 
-            CLIP_CMD="cat > /dev/clipboard" # Fonctionne souvent sous Git Bash
+            CLIP_CMD="cat > /dev/clipboard" # Often works under Git Bash
             CHECK_CMD="ffmpeg -list_devices true -f dshow -i dummy 2>&1 | grep 'DirectShow audio devices'"
             ;;
         *)
-            echo "${RED}OS non supporté : $OS_TYPE${NC}"
+            echo "${RED}Unsupported OS: $OS_TYPE${NC}"
             exit 1
             ;;
     esac
 }
 
 check_hardware() {
-    echo ">>> Vérification matériel ($OS_TYPE / $DRIVER)..."
+    echo ">>> Checking hardware ($OS_TYPE / $DRIVER)..."
     
-    # Test FFmpeg installation réelle (version)
+    # Test actual FFmpeg installation (version)
     if ! ffmpeg -version &> /dev/null; then
-        echo "${RED}FFmpeg semble installé mais ne répond pas.${NC}"
+        echo "${RED}FFmpeg seems installed but is not responding.${NC}"
         exit 1
     fi
 
-    # Test Microphone (Simulation de listage)
-    # Note : Sur macOS, cela peut déclencher la demande de permission la première fois.
+    # Test Microphone (Listing simulation)
+    # Note: On macOS, this triggers permission request on first run.
     if ! eval "$CHECK_CMD" &> /dev/null; then
-        echo "${YELLOW}ATTENTION : Aucun périphérique audio détecté via FFmpeg.$NC"
-        echo "Si vous êtes sur macOS : Vérifiez Réglages Système > Confidentialité > Micro > Terminal."
-        echo "Si vous êtes sur Linux : Vérifiez PulseAudio/ALSA."
-        echo -n "Appuyez sur Entrée pour continuer malgré tout (ou Ctrl+C pour quitter)..."
+        echo "${YELLOW}WARNING: No audio device detected via FFmpeg.$NC"
+        echo "If on macOS: Check System Settings > Privacy > Microphone > Terminal."
+        echo "If on Linux: Check PulseAudio/ALSA."
+        echo -n "Press Enter to continue anyway (or Ctrl+C to quit)..."
         read
     fi
 }
 
 # ==========================================
-# UI & AFFICHAGE
+# UI & DISPLAY
 # ==========================================
 draw_ui() {
     clear
@@ -123,10 +123,10 @@ draw_ui() {
     echo "----------------------------------------"
     echo -e " SERVER: ${BOLD}$REMOTE_IP${NC} | OS: ${BOLD}$OS_TYPE ($DRIVER)${NC}"
     echo "----------------------------------------"
-    echo -e " [ESPACE] : REC / STOP"
-    echo -e " [L]      : Langue"
-    echo -e " [T]      : Traduction (EN)"
-    echo -e " [Q]      : Quitter"
+    echo -e " [SPACE]  : REC / STOP"
+    echo -e " [L]      : Language"
+    echo -e " [T]      : Translation (EN)"
+    echo -e " [Q]      : Quit"
     echo "----------------------------------------"
     tput civis
     draw_settings
@@ -149,17 +149,17 @@ draw_settings() {
 
 update_status() {
     tput cup 15 0; tput el
-    echo -e " STATUT : $1"
+    echo -e " STATUS : $1"
 }
 
 update_transcription() {
     tput cup 17 0; tput ed
-    echo -e "${BOLD}RÉSULTAT :${NC}"
+    echo -e "${BOLD}RESULT :${NC}"
     echo -e "$1"
 }
 
 # ==========================================
-# LOGIQUE MÉTIER
+# BUSINESS LOGIC
 # ==========================================
 cycle_lang() {
     local size=${#LANGS[@]}
@@ -174,24 +174,24 @@ toggle_trans() {
 
 toggle_record() {
     if [[ $IS_RECORDING -eq 0 ]]; then
-        # DÉMARRAGE
+        # START
         IS_RECORDING=1
-        update_status "${RED}${BOLD}● ENREGISTREMENT...${NC}"
+        update_status "${RED}${BOLD}● RECORDING...${NC}"
         
-        # Lancement ffmpeg
+        # Start ffmpeg
         ffmpeg -y -f "$DRIVER" -i "$INPUT" -ar 16000 -ac 1 -c:a pcm_s16le "$TEMP_FILE" -loglevel quiet < /dev/null &
         RECORDING_PID=$!
         
-        # Vérification immédiate : est-ce que ça a planté ?
+        # Immediate check: did it crash?
         sleep 0.5
         if ! kill -0 $RECORDING_PID 2>/dev/null; then
             IS_RECORDING=0
-            update_status "${RED}ERREUR : Impossible d'accéder au micro.${NC}"
-            update_transcription "Vérifiez vos permissions ou le périphérique d'entrée ($INPUT)."
+            update_status "${RED}ERROR: Cannot access microphone.${NC}"
+            update_transcription "Check permissions or input device ($INPUT)."
             return
         fi
     else
-        # ARRÊT
+        # STOP
         IS_RECORDING=0
         if [[ $RECORDING_PID -ne 0 ]]; then 
             kill $RECORDING_PID 2>/dev/null
@@ -203,7 +203,7 @@ toggle_record() {
 
 process_audio() {
     if [[ ! -f "$TEMP_FILE" ]]; then return; fi
-    update_status "${YELLOW}Traitement...${NC}"
+    update_status "${YELLOW}Processing...${NC}"
 
     local lang_arg=""
     local cur_lang="${LANGS[$CUR_LANG_IDX]}"
@@ -216,18 +216,18 @@ process_audio() {
         trans_arg="-F translate=true"
     fi
 
-    # Appel API (curl gère les args vides proprement ici)
+    # API Call (curl handles empty args cleanly here)
     RESPONSE=$(curl -s -F "file=@$TEMP_FILE" -F "temperature=0.0" -F "response_format=json" $lang_arg $trans_arg "$API_URL")
     
-    # Nettoyage JSON brut (dépend de la réponse serveur, supposée standard OpenAI format)
+    # Raw JSON cleanup (depends on server response, assumed standard OpenAI format)
     RESULT=$(echo "$RESPONSE" | jq -r '.text' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
     if [[ -n "$RESULT" && "$RESULT" != "null" ]]; then
         echo -n "$RESULT" | $CLIP_CMD
-        update_status "${GREEN}PRÊT (Copié)${NC}"
+        update_status "${GREEN}READY (Copied)${NC}"
         update_transcription "$RESULT"
     else
-        update_status "${RED}Erreur API${NC}"
+        update_status "${RED}API Error${NC}"
         update_transcription "$RESPONSE"
     fi
 }
@@ -237,13 +237,13 @@ process_audio() {
 # ==========================================
 check_dependencies
 configure_env
-check_hardware # Vérification active du micro
+check_hardware # Active microphone check
 
-# Check serveur
+# Server check
 if ! curl -s --max-time 1 "$API_URL" >/dev/null; then true; fi
 
 draw_ui
-update_status "${GREEN}PRÊT${NC}"
+update_status "${GREEN}READY${NC}"
 
 while true; do
     IFS= read -rsn1 -p "" key

@@ -134,6 +134,12 @@ screen -dmS glm-47 ./llama.cpp/build/bin/llama-server \
     --ctx-size 0
 ```
 
+#### or
+
+```bash
+screen -dmS glm47 bash launch_glm4.7_flash.sh
+```
+
 *Max context window: 202752*
 [Documentation](https://unsloth.ai/docs/models/glm-4.7-flash)
 [Documentation 2](https://unsloth.ai/docs/basics/claude-codex#start-the-llama-server)
@@ -226,6 +232,19 @@ See [SETUP_WHISPER.md](SETUP_WHISPER.md) for detailed instructions.
 
 ---
 
+## 6. Whisper TUI: Voice-to-Text Terminal Interface
+
+<figure>
+<img src="assets/image/whisper_tui.png" alt="Whisper TUI Interface" />
+<figcaption>Whisper TUI Interface</figcaption>
+</figure>
+
+**Unlock the ultimate workflow.**
+
+👉 **[Setup Guide & Usage (TUI)](SETUP_SPEECH_TO_TEXT_TUI.md)**
+
+---
+
 ## 7. Vibe-Coding with Mistral Vibe
 
 ### 1. Setup Workspace
@@ -310,7 +329,7 @@ api_style = "openai"
 backend = "generic"
 
 [[models]]
-name = "Glm-4.7-Flash"
+name = "GLM-4.7-Flash-Q8_K_XL"
 provider = "dgx-remote-llamacpp"
 temperature = 1.0
 input_price = 0.0

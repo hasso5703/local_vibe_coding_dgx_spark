@@ -25,9 +25,11 @@ echo "🚀 Lancement de GLM-4.7 Flash..."
 ./llama.cpp/build/bin/llama-server \
     --model "$MODEL_PATH" \
     --alias "GLM-4.7-Flash-Q8_K_XL" \
+    --chat-template-kwargs "{\"enable_thinking\": false}" \
     --fit on \
-    --temp 1.0 \
+    --temp 0.2 \
     --top-p 0.95 \
+    --top-k 0 \
     --min-p 0.01 \
     --port 8080 \
     --host 0.0.0.0 \
@@ -36,5 +38,8 @@ echo "🚀 Lancement de GLM-4.7 Flash..."
     --kv-unified \
     --cache-type-k q8_0 --cache-type-v q8_0 \
     --flash-attn on \
-    --batch-size 4096 --ubatch-size 1024 \
-    --ctx-size 0
+    --batch-size 4096 --ubatch-size 4096 \
+    --ctx-size 202752
+
+# Georgi Gerganov's settings
+# https://x.com/ggerganov/status/2016903216093417540?s=20

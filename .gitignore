@@ -10,6 +10,3 @@ wheels/
 .venv
 llama.cpp/
 whisper.cpp/
-brouillon.md
-launch_glm4.7_flash.sh
-whisper_commands.md

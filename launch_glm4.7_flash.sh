@@ -27,7 +27,7 @@ echo "🚀 Lancement de GLM-4.7 Flash..."
     --alias "GLM-4.7-Flash-Q8_K_XL" \
     --chat-template-kwargs "{\"enable_thinking\": false}" \
     --fit on \
-    --temp 0.2 \
+    --temp 0.6 \
     --top-p 0.95 \
     --top-k 0 \
     --min-p 0.01 \

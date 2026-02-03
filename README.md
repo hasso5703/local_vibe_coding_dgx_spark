@@ -77,6 +77,13 @@ hf download unsloth/GLM-4.7-Flash-GGUF \
 
 ### Other Models
 
+**Qwen3-Coder-Next**
+```bash
+hf download unsloth/Qwen3-Coder-Next-GGUF \
+    --include "Q8_0/Qwen3-Coder-Next-Q8_0-*.gguf" \
+    --local-dir ~/models/Qwen3-Coder-Next-Q8_0
+```
+
 **Devstral-2-123B-Instruct (UD-Q4_K_XL):**
 ```bash
 hf download unsloth/Devstral-2-123B-Instruct-2512-GGUF \
@@ -112,6 +119,28 @@ hf download unsloth/gpt-oss-120b-GGUF \
 ---
 
 ## 4. Running GLM Inference Server
+
+### Qwen3-Coder-Next
+
+```bash
+screen -dmS qwen3-coder-next ./llama.cpp/build/bin/llama-server \
+    --model ~/models/Qwen3-Coder-Next-Q8_0/Qwen3-Coder-Next-Q8_0-00001-of-00002.gguf \
+    --alias "Qwen3-Coder-Next-Q8_0" \
+    --fit on \
+    --temp 1.0 \
+    --top-p 0.95 \
+    --top-k 40 \
+    --min-p 0.01 \
+    --port 8080 \
+    --host 0.0.0.0 \
+    --threads -8 \
+    --jinja \
+    --kv-unified \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --flash-attn on \
+    --ctx-size 262144
+```
+[Documentation](https://unsloth.ai/docs/models/qwen3-coder-next)
 
 ### Launch GLM-4.7-Flash (UD-Q8_K_XL) from root dir
 

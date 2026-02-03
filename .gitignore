@@ -9,4 +9,4 @@ wheels/
 # Virtual environments
 .venv
 llama.cpp/
-whisper.cpp/
+whisper.cpp

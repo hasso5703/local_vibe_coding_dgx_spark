@@ -124,7 +124,7 @@ hf download unsloth/gpt-oss-120b-GGUF \
 
 ```bash
 screen -dmS qwen3-coder-next ./llama.cpp/build/bin/llama-server \
-    --model ~/models/Qwen3-Coder-Next-Q8_0/Qwen3-Coder-Next-Q8_0-00001-of-00002.gguf \
+    --model ~/models/Qwen3-Coder-Next-Q8_0/Q8_0/Qwen3-Coder-Next-Q8_0-00001-of-00002.gguf \
     --alias "Qwen3-Coder-Next-Q8_0" \
     --fit on \
     --temp 1.0 \
@@ -133,10 +133,9 @@ screen -dmS qwen3-coder-next ./llama.cpp/build/bin/llama-server \
     --min-p 0.01 \
     --port 8080 \
     --host 0.0.0.0 \
-    --threads -8 \
+    --threads -4 \
     --jinja \
     --kv-unified \
-    --cache-type-k q8_0 --cache-type-v q8_0 \
     --flash-attn on \
     --ctx-size 262144
 ```

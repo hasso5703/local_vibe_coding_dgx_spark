@@ -83,6 +83,13 @@ hf download unsloth/Qwen3-Coder-Next-GGUF \
     --include "Q8_0/Qwen3-Coder-Next-Q8_0-*.gguf" \
     --local-dir ~/models/Qwen3-Coder-Next-Q8_0
 ```
+or 
+
+```bash
+hf download unsloth/Qwen3-Coder-Next-GGUF --include "UD-Q8_K_XL/Qwen3-Coder-Next-UD-Q8_K_XL-*.gguf" --local-dir ~/models/Qwen3-Coder-Next-UD-Q8_K_XL
+
+hf download unsloth/Qwen3-Coder-Next-GGUF --include "Q8_0/Qwen3-Coder-Next-Q8_0-*.gguf" --local-dir ~/models/Qwen3-Coder-Next-Q8_0
+```
 
 **Devstral-2-123B-Instruct (UD-Q4_K_XL):**
 ```bash
@@ -124,7 +131,7 @@ hf download unsloth/gpt-oss-120b-GGUF \
 
 ```bash
 screen -dmS qwen3-coder-next ./llama.cpp/build/bin/llama-server \
-    --model ~/models/Qwen3-Coder-Next-Q8_0/Q8_0/Qwen3-Coder-Next-Q8_0-00001-of-00002.gguf \
+    --model ~/models/Qwen3-Coder-Next-Q8_0/Q8_0/Qwen3-Coder-Next-Q8_0-00001-of-00003.gguf \
     --alias "Qwen3-Coder-Next-Q8_0" \
     --fit on \
     --temp 1.0 \
@@ -137,8 +144,25 @@ screen -dmS qwen3-coder-next ./llama.cpp/build/bin/llama-server \
     --jinja \
     --kv-unified \
     --flash-attn on \
-    --ctx-size 262144
+    --ctx-size 0
 ```
+
+```bash
+./llama.cpp/build/bin/llama-server --model ~/models/Qwen3-Coder-Next-UD-Q8_K_XL/UD-Q8_K_XL/Qwen3-Coder-Next-UD-Q8_K_XL-00001-of-00003.gguf \
+--alias "Qwen3-Coder-Next-UD-Q8_K_XL" \
+--fit on \
+--temp 1.0 \
+--top-p 0.95 \
+--top-k 40 \
+--min-p 0.01 \
+--port 8080 \
+--host 0.0.0.0 \
+--threads -4 \
+--jinja \
+--ctx-size 262144
+```
+
+
 [Documentation](https://unsloth.ai/docs/models/qwen3-coder-next)
 
 ### Launch GLM-4.7-Flash (UD-Q8_K_XL) from root dir
@@ -153,12 +177,8 @@ screen -dmS glm-47 ./llama.cpp/build/bin/llama-server \
     --min-p 0.01 \
     --port 8080 \
     --host 0.0.0.0 \
-    --threads -8 \
+    --threads -4 \
     --jinja \
-    --kv-unified \
-    --cache-type-k q8_0 --cache-type-v q8_0 \
-    --flash-attn on \
-    --batch-size 4096 --ubatch-size 1024 \
     --ctx-size 0
 ```
 
@@ -312,6 +332,13 @@ backend = "generic"
 reasoning_field_name = "reasoning_content"
 
 [[models]]
+name = "Qwen3-Coder-Next-Q8_0"
+provider = "llamacpp"
+temperature = 1.0
+input_price = 0.0
+output_price = 0.0
+
+[[models]]
 name = "GLM-4.7-Flash-Q8_K_XL"
 provider = "llamacpp"
 temperature = 1.0
@@ -355,6 +382,13 @@ api_base = "http://100.114.54.60:8080/v1"  # Replace with DGX Tailscale IP
 api_key_env_var = ""
 api_style = "openai"
 backend = "generic"
+
+[[models]]
+name = "Qwen3-Coder-Next-UD-Q8_K_XL"
+provider = "dgx-remote-llamacpp"
+temperature = 1.0
+input_price = 0.0
+output_price = 0.0
 
 [[models]]
 name = "GLM-4.7-Flash-Q8_K_XL"
